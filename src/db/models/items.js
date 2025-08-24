@@ -1,0 +1,16 @@
+import { Schema, model } from 'mongoose';
+
+const itemsSchema = new Schema({
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+  category: {
+    type: String,
+    enum: ['Auto', 'Food', 'Health', 'Transport', 'Education'],
+    required: true,
+  },
+  quantity: { type: Number, required: true },
+  date: { type: Date, default: Date.now },
+  userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
+});
+
+export const ItemsSchema = model('itemsSchema', itemsSchema);

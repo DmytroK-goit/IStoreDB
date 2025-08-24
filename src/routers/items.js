@@ -14,12 +14,14 @@ import {
   updateTransaction,
 } from '../controllers/transaction.js';
 import { authenticate } from '../middlewares/authenticate.js';
+import { isAdmin } from '../middlewares/isAdmin.js';
 
 const router = express.Router();
 
 router.post(
   '/',
   authenticate,
+  isAdmin,
   validateBody(createTransactionSchema),
   ctrlWrapper(addTransaction),
 );
