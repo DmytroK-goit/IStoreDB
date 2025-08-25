@@ -1,13 +1,9 @@
 import express from 'express';
 // import { isValidId } from '../middlewares/isValidId.js';
 import { validateBody } from '../middlewares/validateBody.js';
-import {
-  createTransactionSchema,
-  updateTransactionSchema,
-} from '../validation/transaction.js';
+import { updateTransactionSchema } from '../validation/transaction.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
-  addTransaction,
   deleteTransaction,
   getIncomeAndExpenses,
   getTransactionsByMonth,
@@ -15,17 +11,26 @@ import {
 } from '../controllers/transaction.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { isAdmin } from '../middlewares/isAdmin.js';
+import { createSoldProductSchema } from '../validation/items.js';
+import { createProduct } from '../controllers/productController.js';
+import { ContactUs } from '../db/models/contactUs.js';
 
 const router = express.Router();
 
 router.post(
-  '/',
+  '/admin',
   authenticate,
   isAdmin,
-  validateBody(createTransactionSchema),
-  ctrlWrapper(addTransaction),
+  validateBody(createSoldProductSchema),
+  ctrlWrapper(createProduct),
 );
-router.get('/summary', authenticate, ctrlWrapper(getTransactionsByMonth));
+router.post(
+  '/contactUs',
+
+  validateBody(createSoldProductSchema),
+  ctrlWrapper(ContactUs),
+);
+router.get('/products', ctrlWrapper(getTransactionsByMonth));
 router.get('/income-expenses', authenticate, ctrlWrapper(getIncomeAndExpenses));
 
 router.patch(
