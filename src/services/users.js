@@ -5,19 +5,22 @@ import { UsersCollection } from '../db/models/user.js';
 import { ONE_DAY, ONE_HOUR } from '../constants/index.js';
 import { SessionsCollection } from '../db/models/sessions.js';
 
-export const registerUser = async ({ email, password }) => {
-  const user = await UsersCollection.findOne({ email });
-
-  if (user) {
+export const registerUser = async ({ email, password, name, role }) => {
+  const existingUser = await UsersCollection.findOne({ email });
+  if (existingUser) {
     throw createHttpError(409, 'Email in use');
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-
-  return await UsersCollection.create({
+  const finalName = name && name.trim() !== '' ? name : email.split('@')[0];
+  const user = await UsersCollection.create({
     email,
     password: hashedPassword,
+    name: finalName,
+    role: role || 'user',
   });
+
+  return user;
 };
 
 const createSession = () => {

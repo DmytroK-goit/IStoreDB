@@ -13,7 +13,7 @@ const usersSchema = new Schema(
     },
     name: {
       type: String,
-      required: false,
+      required: true,
     },
     role: {
       type: String,
