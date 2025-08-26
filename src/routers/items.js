@@ -1,26 +1,21 @@
 import express from 'express';
-// import { isValidId } from '../middlewares/isValidId.js';
 import { validateBody } from '../middlewares/validateBody.js';
-import { updateTransactionSchema } from '../validation/transaction.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import {
-  deleteTransaction,
-  getIncomeAndExpenses,
-  getTransactionsByMonth,
-  updateTransaction,
-} from '../controllers/transaction.js';
 import { authenticate } from '../middlewares/authenticate.js';
-import { isAdmin } from '../middlewares/isAdmin.js';
 import { createSoldProductSchema } from '../validation/items.js';
-import { createProduct } from '../controllers/productController.js';
-import { ContactUs } from '../db/models/contactUs.js';
+import {
+  createProduct,
+  getProducts,
+} from '../controllers/productController.js';
+import { createContactMessage } from '../controllers/contactUs.js';
+import { authorizeRole } from '../middlewares/authorizeRole.js';
 
 const router = express.Router();
 
 router.post(
-  '/admin',
+  '/addProduct',
   authenticate,
-  isAdmin,
+  authorizeRole('admin'),
   validateBody(createSoldProductSchema),
   ctrlWrapper(createProduct),
 );
@@ -28,17 +23,15 @@ router.post(
   '/contactUs',
 
   validateBody(createSoldProductSchema),
-  ctrlWrapper(ContactUs),
+  ctrlWrapper(createContactMessage),
 );
-router.get('/products', ctrlWrapper(getTransactionsByMonth));
-router.get('/income-expenses', authenticate, ctrlWrapper(getIncomeAndExpenses));
+router.get('/', ctrlWrapper(getProducts));
 
-router.patch(
-  '/:id',
-  authenticate,
-  validateBody(updateTransactionSchema),
-  ctrlWrapper(updateTransaction),
-);
-router.delete('/:id', authenticate, ctrlWrapper(deleteTransaction));
+// router.patch(
+//   '/:id',
+//   authenticate,
+//   validateBody(updateTransactionSchema),
+//   ctrlWrapper(updateTransaction),
+// );
 
 export default router;

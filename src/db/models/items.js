@@ -10,7 +10,8 @@ const itemsSchema = new Schema({
   },
   quantity: { type: Number, required: true },
   date: { type: Date, default: Date.now },
+  img: { type: String, required: true },
   userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
 });
 
-export const ItemsSchema = model('itemsSchema', itemsSchema);
+export const ItemsCollection = model('items', itemsSchema);
