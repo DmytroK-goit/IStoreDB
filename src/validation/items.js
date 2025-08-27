@@ -1,12 +1,6 @@
 import Joi from 'joi';
 
 export const createSoldProductSchema = Joi.object({
-  id: Joi.number().integer().min(1).required().messages({
-    'number.base': 'ID must be a number',
-    'number.integer': 'ID must be an integer',
-    'number.min': 'ID must be greater than 0',
-    'any.required': 'ID is required',
-  }),
   name: Joi.string().max(100).required().messages({
     'string.base': 'Name must be a string',
     'string.max': 'Name must not exceed 100 characters',
@@ -17,26 +11,44 @@ export const createSoldProductSchema = Joi.object({
     'number.min': 'Price cannot be negative',
     'any.required': 'Price is required',
   }),
+  category: Joi.string()
+    .valid('Auto', 'Food', 'Health', 'Transport', 'Education')
+    .required()
+    .messages({
+      'any.only':
+        'Category must be one of: Auto, Food, Health, Transport, Education',
+      'any.required': 'Category is required',
+    }),
   quantity: Joi.number().integer().min(1).required().messages({
     'number.base': 'Quantity must be a number',
     'number.integer': 'Quantity must be an integer',
     'number.min': 'Quantity must be at least 1',
     'any.required': 'Quantity is required',
   }),
-  date: Joi.string()
-    .pattern(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/)
-    .required()
-    .messages({
-      'string.pattern.base': 'Date must be in the format YYYY-MM-DDTHH:mm',
-      'any.required': 'Date is required',
-    }),
+  description: Joi.string().max(500).required().messages({
+    'string.base': 'Description must be a string',
+    'string.max': 'Description must not exceed 500 characters',
+    'any.required': 'Description is required',
+  }),
+  date: Joi.date().iso().required().messages({
+    'date.base': 'Date must be a valid date',
+    'date.format': 'Date must be in ISO format (YYYY-MM-DDTHH:mm:ss.sssZ)',
+    'any.required': 'Date is required',
+  }),
+  img: Joi.string().uri().required().messages({
+    'string.base': 'Image must be a string',
+    'string.uri': 'Image must be a valid URL',
+    'any.required': 'Image is required',
+  }),
 });
 
 export const updateSoldProductSchema = Joi.object({
   name: Joi.string().max(100).optional(),
   price: Joi.number().min(0).optional(),
-  quantity: Joi.number().integer().min(1).optional(),
-  date: Joi.string()
-    .pattern(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/)
+  category: Joi.string()
+    .valid('Auto', 'Food', 'Health', 'Transport', 'Education')
     .optional(),
+  quantity: Joi.number().integer().min(1).optional(),
+  date: Joi.date().iso().optional(),
+  img: Joi.string().uri().optional(),
 });

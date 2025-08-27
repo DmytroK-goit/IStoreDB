@@ -5,7 +5,7 @@ const itemsSchema = new Schema({
   price: { type: Number, required: true },
   category: {
     type: String,
-    enum: ['Auto', 'Food', 'Health', 'Transport', 'Education'],
+    enum: ['Auto', 'Food', 'Health', 'Transport', 'Education', 'Electronics'],
     required: true,
   },
   quantity: { type: Number, required: true },

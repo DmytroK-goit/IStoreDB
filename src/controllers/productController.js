@@ -1,13 +1,15 @@
-import { ItemsSchema } from '../db/models/items';
+import { ItemsCollection } from '../db/models/items.js';
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, price, category, quantity } = req.body;
-    const product = await ItemsSchema.create({
+    const { name, price, category, quantity, img } = req.body;
+    const product = await ItemsCollection.create({
       name,
       price,
       category,
       quantity,
+      img,
+      userId: req.user._id,
     });
     res.status(201).json(product);
   } catch (error) {
@@ -16,7 +18,7 @@ export const createProduct = async (req, res) => {
 };
 export const getProducts = async (req, res) => {
   try {
-    const products = await ItemsSchema.find();
+    const products = await ItemsCollection.find();
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
