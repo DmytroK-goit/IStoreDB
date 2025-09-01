@@ -10,7 +10,7 @@ const itemsSchema = new Schema({
   },
   quantity: { type: Number, required: true },
   date: { type: Date, default: Date.now },
-  img: { type: String, required: true },
+  img: { type: String, required: false },
   userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
 });
 
