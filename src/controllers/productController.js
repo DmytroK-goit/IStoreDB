@@ -17,7 +17,7 @@ export const createProduct = async (req, res) => {
       description: description || '',
       category,
       quantity: Number(quantity),
-      image: image ? image.path || image.buffer : null,
+      image: image ? image.path : '',
     };
 
     const saved = await ItemsCollection.create(newProduct);
