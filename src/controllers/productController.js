@@ -3,7 +3,7 @@ import { ItemsCollection } from '../db/models/items.js';
 export const createProduct = async (req, res) => {
   try {
     const { name, price, description, category, quantity } = req.body;
-    const image = req.file;
+    const file = req.file;
 
     if (!name || !price || !category || !quantity) {
       return res
@@ -17,7 +17,8 @@ export const createProduct = async (req, res) => {
       description: description || '',
       category,
       quantity: Number(quantity),
-      image: image ? image.path : '',
+      img: file ? file.path : null,
+      userId: req.user._id,
     };
 
     const saved = await ItemsCollection.create(newProduct);
