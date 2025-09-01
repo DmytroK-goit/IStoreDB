@@ -134,24 +134,25 @@ export const registerUserController = async (req, res) => {
   });
 };
 
-// Функція для встановлення cookie сесії
 const setupSession = (res, session) => {
-  res.cookie('refreshToken', session.refreshToken, {
+  const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // тільки https у продакшн
-    sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none',
+  };
+
+  res.cookie('refreshToken', session.refreshToken, {
+    ...cookieOptions,
     maxAge: ONE_DAY * 30,
   });
+
   res.cookie('accessToken', session.accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 1000 * 60 * 15, // 15 хвилин
+    ...cookieOptions,
+    maxAge: 1000 * 60 * 15,
   });
+
   res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    ...cookieOptions,
     maxAge: ONE_DAY * 30,
   });
 };
@@ -164,10 +165,8 @@ export const loginUserController = async (req, res) => {
 
   const { session, user } = await loginUser(credentials);
 
-  // Встановлюємо всі токени у cookie
   setupSession(res, session);
 
-  // Не віддаємо accessToken у JSON
   res.status(200).json({
     status: 200,
     message: 'Successfully logged in a user!',
