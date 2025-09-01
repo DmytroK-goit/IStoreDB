@@ -12,7 +12,7 @@ import { createContactMessage } from '../controllers/contactUs.js';
 import { authorizeRole } from '../middlewares/authorizeRole.js';
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.post(
   '/addProduct',

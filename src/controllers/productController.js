@@ -2,18 +2,32 @@ import { ItemsCollection } from '../db/models/items.js';
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, price, category, quantity, img } = req.body;
-    const product = await ItemsCollection.create({
+    const { name, price, description, category, quantity } = req.body;
+    const image = req.file;
+
+    if (!name || !price || !category || !quantity) {
+      return res
+        .status(400)
+        .json({ message: 'Name, price, category, and quantity are required' });
+    }
+
+    const newProduct = {
       name,
-      price,
+      price: Number(price),
+      description: description || '',
       category,
-      quantity,
-      img,
-      userId: req.user._id,
-    });
-    res.status(201).json(product);
+      quantity: Number(quantity),
+      image: image ? image.path || image.buffer : null,
+    };
+
+    const saved = await ItemsCollection.create(newProduct);
+
+    res.status(201).json(saved);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: 'Failed to create product', error: error.message });
   }
 };
 export const getProducts = async (req, res) => {
