@@ -21,7 +21,6 @@ router.post(
 );
 router.post(
   '/contactUs',
-
   validateBody(createSoldProductSchema),
   ctrlWrapper(createContactMessage),
 );

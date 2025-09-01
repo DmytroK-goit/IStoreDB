@@ -29,6 +29,7 @@ export const setupServer = () => {
       credentials: true,
     }),
   );
+
   app.use(cookieParser());
   app.use(
     pino({
