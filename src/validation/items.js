@@ -30,7 +30,7 @@ export const createSoldProductSchema = Joi.object({
     'string.max': 'Description must not exceed 500 characters',
     'any.required': 'Description is required',
   }),
-  date: Joi.date().iso().required().messages({
+  date: Joi.date().iso().messages({
     'date.base': 'Date must be a valid date',
     'date.format': 'Date must be in ISO format (YYYY-MM-DDTHH:mm:ss.sssZ)',
     'any.required': 'Date is required',
