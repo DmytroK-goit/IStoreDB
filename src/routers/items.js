@@ -17,7 +17,7 @@ router.post(
   '/addProduct',
   authenticate,
   authorizeRole('admin'),
-  upload.single('image'),
+  upload.single('img'),
   validateBody(createSoldProductSchema),
   ctrlWrapper(createProduct),
 );

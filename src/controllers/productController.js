@@ -1,50 +1,56 @@
 import { ItemsCollection } from '../db/models/items.js';
 import cloudinary from '../utils/cloudinary.js';
+import streamifier from 'streamifier';
 
 export const createProduct = async (req, res) => {
   try {
     const { name, price, description, category, quantity } = req.body;
 
     if (!name || !price || !category || !quantity) {
-      return res
-        .status(400)
-        .json({ message: 'Name, price, category, and quantity are required' });
+      return res.status(400).json({
+        message: 'Name, price, category, and quantity are required',
+      });
     }
 
     let imageUrl = null;
 
     if (req.file) {
-      const result = await cloudinary.uploader.upload_stream(
+      const uploadStream = cloudinary.uploader.upload_stream(
         { folder: 'products' },
         (error, result) => {
-          if (error) throw error;
-          return result;
+          if (error)
+            return res.status(500).json({ message: 'Cloudinary error', error });
+          imageUrl = result.secure_url;
+
+          saveProduct();
         },
       );
 
-      const streamifier = (await import('streamifier')).default;
-      streamifier.createReadStream(req.file.buffer).pipe(result);
-      imageUrl = result.secure_url;
+      streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+    } else {
+      saveProduct();
     }
 
-    const newProduct = {
-      name,
-      price: Number(price),
-      description: description || '',
-      category,
-      quantity: Number(quantity),
-      img: imageUrl,
-      userId: req.user._id,
-    };
+    async function saveProduct() {
+      const newProduct = {
+        name,
+        price: Number(price),
+        description: description || '',
+        category,
+        quantity: Number(quantity),
+        img: imageUrl,
+        userId: req.user._id,
+      };
 
-    const saved = await ItemsCollection.create(newProduct);
-
-    res.status(201).json(saved);
+      const saved = await ItemsCollection.create(newProduct);
+      return res.status(201).json(saved);
+    }
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ message: 'Failed to create product', error: error.message });
+    return res.status(500).json({
+      message: 'Failed to create product',
+      error: error.message,
+    });
   }
 };
 
