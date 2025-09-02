@@ -35,7 +35,7 @@ export const createSoldProductSchema = Joi.object({
     'date.format': 'Date must be in ISO format (YYYY-MM-DDTHH:mm:ss.sssZ)',
     'any.required': 'Date is required',
   }),
-  img: Joi.string().uri().required().messages({
+  img: Joi.string().uri().messages({
     'string.base': 'Image must be a string',
     'string.uri': 'Image must be a valid URL',
     'any.required': 'Image is required',
