@@ -1,5 +1,4 @@
 import express from 'express';
-import multer from 'multer';
 import { validateBody } from '../middlewares/validateBody.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { authenticate } from '../middlewares/authenticate.js';
@@ -10,9 +9,9 @@ import {
 } from '../controllers/productController.js';
 import { createContactMessage } from '../controllers/contactUs.js';
 import { authorizeRole } from '../middlewares/authorizeRole.js';
+import { upload } from '../middlewares/multer.js';
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
 
 router.post(
   '/addProduct',
