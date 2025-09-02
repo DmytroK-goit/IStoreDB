@@ -1,14 +1,30 @@
 import { ItemsCollection } from '../db/models/items.js';
+import cloudinary from '../utils/cloudinary.js';
 
 export const createProduct = async (req, res) => {
   try {
     const { name, price, description, category, quantity } = req.body;
-    const file = req.file;
 
     if (!name || !price || !category || !quantity) {
       return res
         .status(400)
         .json({ message: 'Name, price, category, and quantity are required' });
+    }
+
+    let imageUrl = null;
+
+    if (req.file) {
+      const result = await cloudinary.uploader.upload_stream(
+        { folder: 'products' },
+        (error, result) => {
+          if (error) throw error;
+          return result;
+        },
+      );
+
+      const streamifier = (await import('streamifier')).default;
+      streamifier.createReadStream(req.file.buffer).pipe(result);
+      imageUrl = result.secure_url;
     }
 
     const newProduct = {
@@ -17,7 +33,7 @@ export const createProduct = async (req, res) => {
       description: description || '',
       category,
       quantity: Number(quantity),
-      img: file ? file.path : null,
+      img: imageUrl,
       userId: req.user._id,
     };
 
@@ -31,6 +47,7 @@ export const createProduct = async (req, res) => {
       .json({ message: 'Failed to create product', error: error.message });
   }
 };
+
 export const getProducts = async (req, res) => {
   try {
     const products = await ItemsCollection.find();
