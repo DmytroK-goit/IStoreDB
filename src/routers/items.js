@@ -7,7 +7,7 @@ import {
   createProduct,
   getProducts,
 } from '../controllers/productController.js';
-import { createContactMessage } from '../controllers/contactUs.js';
+import { createContactMessage } from '../controllers/contactUsMessage.js';
 import { authorizeRole } from '../middlewares/authorizeRole.js';
 import { upload } from '../middlewares/multer.js';
 
