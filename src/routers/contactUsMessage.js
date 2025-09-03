@@ -6,6 +6,7 @@ import { authorizeRole } from '../middlewares/authorizeRole.js';
 import { contactUsValidationSchema } from '../validation/contactUsMessage.js';
 import {
   createContactMessage,
+  delContactMessage,
   getContactMessages,
 } from '../controllers/contactUsMessage.js';
 
@@ -22,6 +23,12 @@ router.get(
   authenticate,
   authorizeRole('admin'),
   ctrlWrapper(getContactMessages),
+);
+router.delete(
+  '/:id',
+  authenticate,
+  authorizeRole('admin'),
+  ctrlWrapper(delContactMessage),
 );
 
 export default router;

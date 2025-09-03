@@ -23,3 +23,15 @@ export const getContactMessages = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+export const delContactMessage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedMessage = await ContactUsCollection.findByIdAndDelete(id);
+    if (!deletedMessage) {
+      return res.status(404).json({ message: 'Message not found' });
+    }
+    res.status(200).json({ message: 'Message deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
