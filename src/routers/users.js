@@ -27,18 +27,4 @@ router.post(
 router.post('/logout', authenticate, ctrlWrapper(logoutUserController));
 router.get('/profile', authenticate, ctrlWrapper(userProfile));
 
-// router.post('/refresh', ctrlWrapper(refreshUsersSessionController));
-
-// router.get('/current', authenticate, ctrlWrapper(getCurrentUserController));
-
-// router.patch(
-//   '/update',
-//   authenticate,
-//   upload.single('avatar'),
-//   validateBody(updateUserSchema),
-//   ctrlWrapper(updateUserController),
-// );
-
-// router.get('/count', ctrlWrapper(getUsersCountController));
-
 export default router;

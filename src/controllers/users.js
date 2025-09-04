@@ -188,9 +188,7 @@ export const logoutUserController = async (req, res) => {
 };
 export const userProfile = async (req, res) => {
   try {
-    const user = await UsersCollection.findById(req.user._id).select(
-      '-password',
-    );
+    const user = await UsersCollection.findById(req.user._id).select('+role');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
