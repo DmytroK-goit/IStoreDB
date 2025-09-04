@@ -116,6 +116,7 @@
 // };
 
 import { ONE_DAY } from '../constants/index.js';
+import { UsersCollection } from '../db/models/user.js';
 import { loginUser, logoutUser, registerUser } from '../services/users.js';
 
 export const registerUserController = async (req, res) => {
@@ -184,4 +185,22 @@ export const logoutUserController = async (req, res) => {
   res.clearCookie('accessToken');
 
   res.status(204).send();
+};
+export const userProfile = async (req, res) => {
+  try {
+    const user = await UsersCollection.findById(req.user._id).select(
+      '-password',
+    );
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };

@@ -5,6 +5,7 @@ import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   logoutUserController,
   registerUserController,
+  userProfile,
 } from '../controllers/users.js';
 import { loginUserController } from '../controllers/users.js';
 import { authenticate } from '../middlewares/authenticate.js';
@@ -24,6 +25,7 @@ router.post(
 );
 
 router.post('/logout', authenticate, ctrlWrapper(logoutUserController));
+router.get('/profile', authenticate, ctrlWrapper(userProfile));
 
 // router.post('/refresh', ctrlWrapper(refreshUsersSessionController));
 
