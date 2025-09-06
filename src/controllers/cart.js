@@ -1,4 +1,4 @@
-import { CartCollection } from '../db/models/cart';
+import { CartCollection } from '../db/models/cart.js';
 
 export const addToCart = async (req, res) => {
   const userId = req.user.id;

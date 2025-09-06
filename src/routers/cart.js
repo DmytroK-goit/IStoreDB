@@ -1,9 +1,10 @@
 import express from 'express';
-import { validateBody } from '../middlewares/validateBody';
-import { ctrlWrapper } from '../utils/ctrlWrapper';
-import { addToCartSchema } from '../validation/cart';
-import { addToCart, getCart, removeFromCart } from '../controllers/cart';
-import { authenticate } from '../middlewares/authenticate';
+
+import { addToCart, getCart, removeFromCart } from '../controllers/cart.js';
+import { authenticate } from '../middlewares/authenticate.js';
+import { validateBody } from '../middlewares/validateBody.js';
+import { addToCartSchema } from '../validation/cart.js';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
 const router = express.Router();
 
@@ -17,4 +18,5 @@ router.post(
 router.get('/', authenticate, ctrlWrapper(getCart));
 
 router.delete('/:id', authenticate, ctrlWrapper(removeFromCart));
+
 export default router;
