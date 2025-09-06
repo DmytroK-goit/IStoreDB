@@ -12,7 +12,7 @@ export const createSoldProductSchema = Joi.object({
     'any.required': 'Price is required',
   }),
   category: Joi.string()
-    .valid('Auto', 'Food', 'Health', 'Transport', 'Education')
+    .valid('Auto', 'Food', 'Health', 'Transport', 'Education', 'Electronics')
     .required()
     .messages({
       'any.only':
