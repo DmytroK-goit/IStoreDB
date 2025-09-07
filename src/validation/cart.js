@@ -9,10 +9,10 @@ const objIdValidation = (values, helpers) => {
 };
 
 export const addToCartSchema = Joi.object({
-  _id: Joi.string().custom(objIdValidation).required(),
+  productId: Joi.string().custom(objIdValidation).required(),
   quantity: Joi.number().integer().min(1).required(),
 });
 
 export const removeFromCartSchema = Joi.object({
-  _id: Joi.string().custom(objIdValidation).required(),
+  productId: Joi.string().custom(objIdValidation).required(),
 });

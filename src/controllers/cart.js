@@ -1,22 +1,33 @@
 import { CartCollection } from '../db/models/cart.js';
 
 export const addToCart = async (req, res) => {
-  const userId = req.user.id;
-  const { _id, quantity } = req.body;
-  let cart = await CartCollection.findOne({ userId });
-
-  if (!cart) {
-    cart = await CartCollection.create({ userId, items: [{ _id, quantity }] });
-  } else {
-    const existingItem = cart.items.find((item) => item._id.toString() === _id);
-    if (existingItem) {
-      existingItem.quantity += quantity;
+  try {
+    const userId = req.user.id;
+    const { productId, quantity } = req.body;
+    let cart = await CartCollection.findOne({ userId });
+    if (!cart) {
+      cart = await CartCollection.create({
+        userId,
+        items: [{ productId, quantity }],
+      });
     } else {
-      cart.items.push({ _id, quantity });
+      const existingItem = cart.items.find(
+        (item) => item.productId.toString() === productId,
+      );
+
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        cart.items.push({ productId, quantity });
+      }
+
+      await cart.save();
     }
-    await cart.save();
+
+    res.status(200).json(cart);
+  } catch (error) {
+    res.status(500).json({ message: 'Something went wrong', error });
   }
-  res.status(200).json(cart);
 };
 export const getCart = async (req, res) => {
   const userId = req.user._id;
