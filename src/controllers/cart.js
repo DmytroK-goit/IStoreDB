@@ -37,12 +37,12 @@ export const getCart = async (req, res) => {
 
 export const removeFromCart = async (req, res) => {
   const userId = req.user._id;
-  const { cartItemId } = req.params;
+  const { id } = req.params;
   const cart = await CartCollection.findOne({ userId });
   if (!cart) return res.status(404).json({ message: 'Cart not found' });
 
   const initialLength = cart.items.length;
-  cart.items = cart.items.filter((item) => item._id.toString() !== cartItemId);
+  cart.items = cart.items.filter((item) => item._id.toString() !== id);
 
   if (cart.items.length === initialLength) {
     return res.status(404).json({ message: 'Cart item not found' });
