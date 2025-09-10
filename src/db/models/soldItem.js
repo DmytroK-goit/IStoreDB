@@ -12,7 +12,6 @@ const orderSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
-    unique: true,
   },
   address: {
     name: { type: String, required: true },
@@ -34,4 +33,4 @@ const orderSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-export const Order = model('Order', orderSchema);
+export const OrderCollection = model('Order', orderSchema);
