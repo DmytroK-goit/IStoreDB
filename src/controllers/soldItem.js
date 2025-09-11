@@ -1,18 +1,18 @@
 import { OrderCollection } from '../db/models/soldItem.js';
-import { ItemsCollection } from '../db/models/items.js';
 import { CartCollection } from '../db/models/cart.js';
 
 export const createOrderFromCart = async (req, res) => {
-  const userId = req.user.id;
-  const { address } = req.body;
-  const cart = await CartCollection.findOne(
-    { userId }.populate('items.productId'),
-  );
-  if (!cart || cart.items.length === 0) {
-    return res.status(400).json({ message: 'Cart is empty' });
-  }
-
   try {
+    const userId = req.user.id;
+    const { address } = req.body;
+
+    const cart = await CartCollection.findOne({ userId }).populate(
+      'items.productId',
+    );
+    if (!cart || cart.items.length === 0) {
+      return res.status(400).json({ message: 'Cart is empty' });
+    }
+
     const order = await OrderCollection.create({
       userId,
       items: cart.items.map((i) => ({
@@ -27,36 +27,13 @@ export const createOrderFromCart = async (req, res) => {
         0,
       ),
       status: 'creating',
+      createdAt: new Date(),
     });
+
     cart.items = [];
     await cart.save();
+
     res.status(201).json(order);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Something went wrong', error });
-  }
-};
-
-export const changeOrderStatus = async (req, res) => {
-  try {
-    const { orderId } = req.params;
-    const { status } = req.body;
-    const userId = req.user._id;
-
-    const order = await OrderCollection.findOne({ _id: orderId, userId });
-    if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
-    }
-
-    const allowedStatuses = ['creating', 'processing', 'shipped', 'delivered'];
-    if (!allowedStatuses.includes(status)) {
-      return res.status(400).json({ message: 'Invalid status' });
-    }
-
-    order.status = status;
-    await order.save();
-
-    res.status(200).json({ message: 'Order status updated', order });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Something went wrong', error });
