@@ -3,7 +3,7 @@ import { CartCollection } from '../db/models/cart.js';
 
 export const createOrderFromCart = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id;
     const { address } = req.body;
 
     const cart = await CartCollection.findOne({ userId }).populate(
@@ -34,6 +34,31 @@ export const createOrderFromCart = async (req, res) => {
     await cart.save();
 
     res.status(201).json(order);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Something went wrong', error });
+  }
+};
+export const changeOrderStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+    const userId = req.user._id;
+
+    const order = await OrderCollection.findOne({ _id: orderId, userId });
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    const allowedStatuses = ['creating', 'processing', 'shipped', 'delivered'];
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+
+    order.status = status;
+    await order.save();
+
+    res.status(200).json({ message: 'Order status updated', order });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Something went wrong', error });
