@@ -7,9 +7,7 @@ export const createOrderFromCart = async (req, res) => {
     const userId = req.user._id;
     const { address } = req.body;
 
-    const cart = await CartCollection.findOne({ userId }).populate(
-      'items.productId',
-    );
+    const cart = await CartCollection.findOne({ userId }).populate('items._id');
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({ message: 'Cart is empty' });
     }
