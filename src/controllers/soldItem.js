@@ -1,5 +1,6 @@
 import { OrderCollection } from '../db/models/soldItem.js';
 import { CartCollection } from '../db/models/cart.js';
+import { ItemsCollection } from '../db/models/items.js';
 
 export const createOrderFromCart = async (req, res) => {
   try {
@@ -13,20 +14,39 @@ export const createOrderFromCart = async (req, res) => {
       return res.status(400).json({ message: 'Cart is empty' });
     }
 
+    const orderItems = [];
+
+    for (const i of cart.items) {
+      const product = await ItemsCollection.findById(i.productId._id);
+      if (!product) {
+        return res
+          .status(404)
+          .json({ message: `Product ${i.productId._id} not found` });
+      }
+
+      if (i.quantity > product.quantity) {
+        return res.status(400).json({
+          message: `Not enough stock for product ${product.name}. Available: ${product.quantity}`,
+        });
+      }
+
+      product.quantity -= i.quantity;
+      await product.save();
+
+      orderItems.push({
+        productId: product._id,
+        name: product.name,
+        price: product.price,
+        quantity: i.quantity,
+      });
+    }
+
     const order = await OrderCollection.create({
       userId,
-      items: cart.items.map((i) => ({
-        productId: i.productId._id,
-        name: i.productId.name,
-        price: i.productId.price,
-        quantity: i.quantity,
-      })),
+      items: orderItems,
       address,
-      total: cart.items.reduce(
-        (sum, i) => sum + i.productId.price * i.quantity,
-        0,
-      ),
-      status: 'creating',
+      total: orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0),
+      status: 'processing',
       createdAt: new Date(),
     });
 
@@ -35,10 +55,13 @@ export const createOrderFromCart = async (req, res) => {
 
     res.status(201).json(order);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Something went wrong', error });
+    console.error('createOrderFromCart error:', error);
+    res
+      .status(500)
+      .json({ message: 'Something went wrong', error: error.message });
   }
 };
+
 export const changeOrderStatus = async (req, res) => {
   try {
     const { orderId } = req.params;
