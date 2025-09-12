@@ -14,21 +14,13 @@ export const orderValidationSchema = Joi.object({
     comment: Joi.string().max(500).allow('', null),
   }).required(),
 
-  // total: Joi.number().positive().required(),
-
-  // status: Joi.string()
-  //   .valid('creating', 'processing', 'shipped', 'delivered')
-  //   .default('creating'),
-
-  // items: Joi.array()
-  //   .items(
-  //     Joi.object({
-  //       productId: Joi.string().hex().length(24).required(),
-  //       name: Joi.string().required(),
-  //       price: Joi.number().positive().required(),
-  //       quantity: Joi.number().integer().min(1).required(),
-  //     }),
-  //   )
-  //   .min(1)
-  //   .required(),
+  items: Joi.array()
+    .items(
+      Joi.object({
+        productId: Joi.string().required(),
+        quantity: Joi.number().min(1).required(),
+      }),
+    )
+    .min(1)
+    .required(),
 });

@@ -5,21 +5,20 @@ import { ItemsCollection } from '../db/models/items.js';
 export const createOrderFromCart = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { address } = req.body;
+    const { address, items } = req.body;
 
-    const cart = await CartCollection.findOne({ userId }).populate('items._id');
-    if (!cart || cart.items.length === 0) {
-      return res.status(400).json({ message: 'Cart is empty' });
+    if (!items || items.length === 0) {
+      return res.status(400).json({ message: 'No items provided' });
     }
 
     const orderItems = [];
 
-    for (const i of cart.items) {
-      const product = await ItemsCollection.findById(i.productId._id);
+    for (const i of items) {
+      const product = await ItemsCollection.findById(i.productId);
       if (!product) {
         return res
           .status(404)
-          .json({ message: `Product ${i.productId._id} not found` });
+          .json({ message: `Product ${i.productId} not found` });
       }
 
       if (i.quantity > product.quantity) {
@@ -48,8 +47,7 @@ export const createOrderFromCart = async (req, res) => {
       createdAt: new Date(),
     });
 
-    cart.items = [];
-    await cart.save();
+    await CartCollection.updateOne({ userId }, { $set: { items: [] } });
 
     res.status(201).json(order);
   } catch (error) {
