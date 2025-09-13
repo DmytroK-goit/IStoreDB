@@ -149,7 +149,7 @@ const setupSession = (res, session) => {
 
   res.cookie('accessToken', session.accessToken, {
     ...cookieOptions,
-    maxAge: 1000 * 60 * 15,
+    maxAge: 1000 * 60 * 60, //one hours
   });
 
   res.cookie('sessionId', session._id, {
