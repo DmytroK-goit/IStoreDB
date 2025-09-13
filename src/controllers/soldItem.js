@@ -60,11 +60,10 @@ export const createOrderFromCart = async (req, res) => {
 
 export const changeOrderStatus = async (req, res) => {
   try {
-    const { orderId } = req.params;
+    const { _id } = req.params;
     const { status } = req.body;
-    const userId = req.user._id;
 
-    const order = await OrderCollection.findOne({ _id: orderId, userId });
+    const order = await OrderCollection.findById(_id);
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
