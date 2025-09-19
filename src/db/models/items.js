@@ -9,6 +9,7 @@ const itemsSchema = new Schema({
     required: true,
   },
   quantity: { type: Number, required: true },
+  description: { type: String, required: true },
   date: { type: Date, default: Date.now },
   img: { type: String, required: false },
   userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
