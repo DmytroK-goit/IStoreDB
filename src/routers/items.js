@@ -35,14 +35,14 @@ router.post(
 
 router.get('/', ctrlWrapper(getProducts));
 router.delete(
-  '/:id',
+  '/delProduct/:id',
   authenticate,
   authorizeRole('admin'),
   ctrlWrapper(deleteItem),
 );
 
 router.patch(
-  '/:id',
+  '/updateProduct/:id',
   authenticate,
   authorizeRole('admin'),
   upload.single('img'),
