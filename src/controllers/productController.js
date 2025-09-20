@@ -70,3 +70,75 @@ export const getProducts = async (req, res) => {
 //       return res.status(404).json({ message: 'Product not found' });
 //     }
 //   }
+export const updateItem = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Admin only.' });
+    }
+
+    const { id } = req.params;
+    const { name, price, description, category, quantity } = req.body;
+
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (price && !isNaN(Number(price))) updateData.price = Number(price);
+    if (description) updateData.description = description;
+    if (category) updateData.category = category;
+    if (quantity && !isNaN(Number(quantity)))
+      updateData.quantity = Number(quantity);
+
+    if (req.file) {
+      updateData.img = await uploadToCloudinary(req.file);
+    }
+
+    const updatedProduct = await ItemsCollection.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true },
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Failed to update product',
+      error: error.message,
+    });
+  }
+};
+
+function uploadToCloudinary(file) {
+  return new Promise((res, rej) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder: 'products' },
+      (error, result) => {
+        if (error) return rej(error);
+        res(result.secure_url);
+      },
+    );
+    streamifier.createReadStream(file.buffer).pipe(uploadStream);
+  });
+}
+export const deleteItem = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Admin only.' });
+    }
+    const { id } = req.params;
+    const deletedProduct = await ItemsCollection.findByIdAndDelete(id);
+    if (!deletedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    res.status(200).json({ message: 'Product deleted', deletedProduct });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Failed to delete product',
+      error: error.message,
+    });
+  }
+};
