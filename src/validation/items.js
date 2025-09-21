@@ -44,11 +44,12 @@ export const createSoldProductSchema = Joi.object({
 
 export const updateSoldProductSchema = Joi.object({
   name: Joi.string().max(100).optional(),
-  price: Joi.number().min(0).optional(),
+  price: Joi.string().optional(),
   category: Joi.string()
     .valid('Auto', 'Food', 'Health', 'Transport', 'Education')
     .optional(),
-  quantity: Joi.number().integer().min(1).optional(),
+  quantity: Joi.string().optional(),
+  description: Joi.string().optional(),
   date: Joi.date().iso().optional(),
-  img: Joi.string().uri().optional(),
-});
+  img: Joi.any().optional(),
+}).unknown(true);
