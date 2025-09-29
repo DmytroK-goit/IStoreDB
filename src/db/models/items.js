@@ -5,7 +5,14 @@ const itemsSchema = new Schema({
   price: { type: Number, required: true },
   category: {
     type: String,
-    enum: ['Auto', 'Food', 'Health', 'Transport', 'Education', 'Electronics'],
+    enum: [
+      'Laptop',
+      'Phone',
+      'Accessories',
+      'Power banks',
+      'Monitors',
+      'Electronics',
+    ],
     required: true,
   },
   quantity: { type: Number, required: true },

@@ -12,7 +12,14 @@ export const createSoldProductSchema = Joi.object({
     'any.required': 'Price is required',
   }),
   category: Joi.string()
-    .valid('Auto', 'Food', 'Health', 'Transport', 'Education', 'Electronics')
+    .valid(
+      'Laptop',
+      'Phone',
+      'Accessories',
+      'Power banks',
+      'Monitors',
+      'Electronics',
+    )
     .required()
     .messages({
       'any.only':
@@ -46,7 +53,14 @@ export const updateSoldProductSchema = Joi.object({
   name: Joi.string().max(100).optional(),
   price: Joi.string().optional(),
   category: Joi.string()
-    .valid('Auto', 'Food', 'Health', 'Transport', 'Education')
+    .valid(
+      'Laptop',
+      'Phone',
+      'Accessories',
+      'Power banks',
+      'Monitors',
+      'Electronics',
+    )
     .optional(),
   quantity: Joi.string().optional(),
   description: Joi.string().optional(),
