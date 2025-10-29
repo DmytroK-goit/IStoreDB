@@ -3,6 +3,7 @@ import { validateBody } from '../middlewares/validateBody.js';
 import { loginUserSchema, registerUserSchema } from '../validation/users.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
+  fetchUsers,
   logoutUserController,
   registerUserController,
   userProfile,
@@ -24,7 +25,12 @@ router.post(
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController),
 );
-router.get('/allUsers', authenticate, authorizeRole('admin'));
+router.get(
+  '/allUsers',
+  authenticate,
+  authorizeRole('admin'),
+  ctrlWrapper(fetchUsers),
+);
 router.post('/logout', authenticate, ctrlWrapper(logoutUserController));
 router.get('/profile', authenticate, ctrlWrapper(userProfile));
 
