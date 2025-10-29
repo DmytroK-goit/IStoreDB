@@ -9,6 +9,7 @@ import {
 } from '../controllers/users.js';
 import { loginUserController } from '../controllers/users.js';
 import { authenticate } from '../middlewares/authenticate.js';
+import { authorizeRole } from '../middlewares/authorizeRole.js';
 
 const router = Router();
 
@@ -23,7 +24,7 @@ router.post(
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController),
 );
-
+router.get('/allUsers', authenticate, authorizeRole('admin'));
 router.post('/logout', authenticate, ctrlWrapper(logoutUserController));
 router.get('/profile', authenticate, ctrlWrapper(userProfile));
 

@@ -202,3 +202,16 @@ export const userProfile = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const fetchUsers = async (req, res) => {
+  try {
+    const users = await UsersCollection.find().select('-password');
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully retrieved users!',
+      data: users,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
