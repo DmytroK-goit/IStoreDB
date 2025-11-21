@@ -7,6 +7,7 @@ import {
   fetchUsers,
   logoutUserController,
   registerUserController,
+  updateUserRole,
   userProfile,
 } from '../controllers/users.js';
 import { loginUserController } from '../controllers/users.js';
@@ -35,13 +36,13 @@ router.get(
 router.post('/logout', authenticate, ctrlWrapper(logoutUserController));
 router.get('/profile', authenticate, ctrlWrapper(userProfile));
 router.patch(
-  '/updateRole/:userId',
+  '/updateRole/id',
   authenticate,
   authorizeRole('admin'),
-  ctrlWrapper(userProfile),
+  ctrlWrapper(updateUserRole),
 );
 router.delete(
-  '/:id',
+  '/id',
   authenticate,
   authorizeRole('admin'),
   ctrlWrapper(deleteUser),
