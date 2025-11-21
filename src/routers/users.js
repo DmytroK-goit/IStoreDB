@@ -3,6 +3,7 @@ import { validateBody } from '../middlewares/validateBody.js';
 import { loginUserSchema, registerUserSchema } from '../validation/users.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
+  deleteUser,
   fetchUsers,
   logoutUserController,
   registerUserController,
@@ -33,5 +34,16 @@ router.get(
 );
 router.post('/logout', authenticate, ctrlWrapper(logoutUserController));
 router.get('/profile', authenticate, ctrlWrapper(userProfile));
-
+router.patch(
+  '/updateRole/:userId',
+  authenticate,
+  authorizeRole('admin'),
+  ctrlWrapper(userProfile),
+);
+router.delete(
+  '/:id',
+  authenticate,
+  authorizeRole('admin'),
+  ctrlWrapper(deleteUser),
+);
 export default router;
