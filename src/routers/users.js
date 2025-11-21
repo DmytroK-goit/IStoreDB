@@ -36,13 +36,13 @@ router.get(
 router.post('/logout', authenticate, ctrlWrapper(logoutUserController));
 router.get('/profile', authenticate, ctrlWrapper(userProfile));
 router.patch(
-  '/updateRole/id',
+  '/updateRole/:id',
   authenticate,
   authorizeRole('admin'),
   ctrlWrapper(updateUserRole),
 );
 router.delete(
-  '/id',
+  '/deleteUser/:id',
   authenticate,
   authorizeRole('admin'),
   ctrlWrapper(deleteUser),
