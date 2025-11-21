@@ -100,7 +100,7 @@ export const fetchUsers = async (req, res) => {
 };
 export const deleteUser = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.params._id;
     const user = await UsersCollection.findByIdAndDelete(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -115,7 +115,7 @@ export const deleteUser = async (req, res) => {
 };
 export const updateUserRole = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.params._id;
     const { role } = req.body;
     const user = await UsersCollection.findByIdAndUpdate(
       userId,
