@@ -30,7 +30,7 @@ router.get('/my', authenticate, ctrlWrapper(getOrderProduct));
 router.get(
   '/all',
   authenticate,
-  authorizeRole('admin'),
+  authorizeRole('admin', 'demo'),
   ctrlWrapper(getAllOrders),
 );
 

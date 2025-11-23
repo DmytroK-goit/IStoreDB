@@ -30,7 +30,7 @@ router.post(
 router.get(
   '/allUsers',
   authenticate,
-  authorizeRole('admin'),
+  authorizeRole('admin', 'demo'),
   ctrlWrapper(fetchUsers),
 );
 router.post('/logout', authenticate, ctrlWrapper(logoutUserController));

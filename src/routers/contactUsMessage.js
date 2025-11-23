@@ -21,7 +21,7 @@ router.post(
 router.get(
   '/',
   authenticate,
-  authorizeRole('admin'),
+  authorizeRole('admin', 'demo'),
   ctrlWrapper(getContactMessages),
 );
 router.delete(
