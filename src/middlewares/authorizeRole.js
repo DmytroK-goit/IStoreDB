@@ -1,13 +1,15 @@
 import createHttpError from 'http-errors';
 
-export const authorizeRole = (role) => (req, res, next) => {
-  if (!req.user) {
-    return next(createHttpError(401, 'Not authenticated'));
-  }
+export const authorizeRole =
+  (...roles) =>
+  (req, res, next) => {
+    if (!req.user) {
+      return next(createHttpError(401, 'Not authenticated'));
+    }
 
-  if (req.user.role !== role) {
-    return next(createHttpError(403, 'Access denied'));
-  }
+    if (!roles.includes(req.user.role)) {
+      return next(createHttpError(403, 'Access denied'));
+    }
 
-  next();
-};
+    next();
+  };
