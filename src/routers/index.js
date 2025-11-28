@@ -12,5 +12,6 @@ router.use('/products', itemsRouter);
 router.use('/contactUs', contactUsRouter);
 router.use('/cart', cartRouter);
 router.use('/sold', soldRouter);
+router.use('/', (await import('./subscribe.js')).default);
 
 export default router;
