@@ -1,21 +1,26 @@
-import express from 'express';
-import webpush from '../push.js';
+// import express from 'express';
+// import webpush from '../push.js';
 
-const router = express.Router();
+// const router = express.Router();
 
-router.post('/subscribe', async (req, res) => {
-  const subscription = req.body;
+// router.post('/', async (req, res) => {
+//   try {
+//     const subscription = req.body;
 
-  console.log('New subscription:', subscription);
+//     console.log('New subscription:', subscription);
 
-  res.status(201).json({ message: 'Subscribed!' });
+//     res.status(201).json({ message: 'Subscribed!' });
 
-  const payload = JSON.stringify({
-    title: 'Welcome!',
-    body: 'You will now receive notifications.',
-  });
+//     const payload = JSON.stringify({
+//       title: 'Welcome to IStore!',
+//       body: 'You will now receive notifications about new products.',
+//     });
 
-  webpush.sendNotification(subscription, payload).catch(console.error);
-});
+//     await webpush.sendNotification(subscription, payload);
+//   } catch (error) {
+//     console.error('Push error:', error);
+//     res.status(500).json({ error: 'Failed to send push' });
+//   }
+// });
 
-export default router;
+// export default router;
