@@ -18,7 +18,7 @@ router.post('/webpush', async (req, res) => {
   try {
     const subscription = req.body;
 
-    console.log('Subscription received:', subscription);
+    await Subscription.create(subscription);
 
     res.status(201).json({ message: 'Subscribed!' });
 
