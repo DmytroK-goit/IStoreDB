@@ -1,6 +1,7 @@
 import { OrderCollection } from '../db/models/soldItem.js';
 import { CartCollection } from '../db/models/cart.js';
 import { ItemsCollection } from '../db/models/items.js';
+import { sendOrderShippedEmail } from '../services/email.js';
 
 export const createOrderFromCart = async (req, res) => {
   try {
@@ -61,9 +62,10 @@ export const createOrderFromCart = async (req, res) => {
 export const changeOrderStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, trackingNumber } = req.body;
 
-    const order = await OrderCollection.findById(id);
+    const order = await OrderCollection.findById(id).populate('user');
+
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
@@ -74,7 +76,20 @@ export const changeOrderStatus = async (req, res) => {
     }
 
     order.status = status;
+
+    if (trackingNumber) {
+      order.trackingNumber = trackingNumber;
+    }
+
     await order.save();
+
+    if (status === 'shipped' && order.user?.email) {
+      await sendOrderShippedEmail(
+        order.user.email,
+        order._id,
+        trackingNumber || order.trackingNumber || 'Немає даних',
+      );
+    }
 
     res.status(200).json({ message: 'Order status updated', order });
   } catch (error) {
