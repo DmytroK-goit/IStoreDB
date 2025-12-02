@@ -63,34 +63,26 @@ export const changeOrderStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status, trackingNumber } = req.body;
-
-    const order = await OrderCollection.findById(id).populate('user');
-
+    const order = await OrderCollection.findById(id).populate('userId');
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
-
     const allowedStatuses = ['creating', 'processing', 'shipped', 'delivered'];
     if (!allowedStatuses.includes(status)) {
       return res.status(400).json({ message: 'Invalid status' });
     }
-
     order.status = status;
-
     if (trackingNumber) {
       order.trackingNumber = trackingNumber;
     }
-
     await order.save();
-
-    if (status === 'shipped' && order.user?.email) {
+    if (status === 'shipped' && order.userId?.email) {
       await sendOrderShippedEmail(
-        order.user.email,
+        order.userId.email,
         order._id,
-        trackingNumber || order.trackingNumber || 'Немає даних',
+        trackingNumber || order.trackingNumber || '—',
       );
     }
-
     res.status(200).json({ message: 'Order status updated', order });
   } catch (error) {
     console.error(error);
