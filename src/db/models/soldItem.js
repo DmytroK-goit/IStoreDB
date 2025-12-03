@@ -29,6 +29,7 @@ const orderSchema = new Schema({
     enum: ['creating', 'processing', 'shipped', 'delivered'],
     default: 'creating',
   },
+  trackingNumber: { type: String, default: null },
   items: [soldItemSchema],
   createdAt: { type: Date, default: Date.now },
 });
